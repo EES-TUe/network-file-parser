@@ -1,7 +1,7 @@
 import unittest
 
 import pandas as pd
-from ElectricityNetworFileParser.GnfParser import GnfParser
+from electricity_network_file_parser.GnfParser import GnfParser
 
 class Test(unittest.TestCase):
 
