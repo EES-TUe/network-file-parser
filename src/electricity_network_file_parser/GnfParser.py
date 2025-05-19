@@ -1,5 +1,5 @@
 import pandas as pd
-from ElectricityNetworFileParser.FileParser import FileParser
+from electricity_network_file_parser.FileParser import FileParser
 
 class GnfParser(FileParser):
 

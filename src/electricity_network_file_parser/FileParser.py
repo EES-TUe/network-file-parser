@@ -3,7 +3,7 @@ import pandas as pd
 
 from pathlib import Path
 
-from ElectricityNetworFileParser.dataclasses import PropertyDescription
+from electricity_network_file_parser.dataclasses import PropertyDescription
 
 class FileParser:
     def __init__(self, file_path):

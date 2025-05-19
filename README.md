@@ -4,7 +4,7 @@ A python package parsing gaia files. It takes a gaia file as input and parses th
 Example usage:
 
 ```python
-from ElectricityNetworFileParser.GnfParser import GnfParser
+from electricity_network_file_parser.GnfParser import GnfParser
 
 gnf_parser = GnfParser("test.gnf")
 gnf_parser.parse_file()
@@ -20,4 +20,4 @@ gnf_parser.write_all_data_frames()
 
 Create a new python environment and run the following command:
 
-`pip install ElectricityNetworFileParser `
+`pip install electricity_network_file_parser `
