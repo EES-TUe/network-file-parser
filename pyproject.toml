@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "NetworFileParser"
+name = "ElectricityNetworFileParser"
 version = "0.0.1"
 authors = [
   { name="Leo van Schooten", email="l.g.t.v.schooten@tue.nl" },
