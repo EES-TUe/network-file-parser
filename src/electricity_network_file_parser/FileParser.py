@@ -121,7 +121,6 @@ class FileParser:
         pass
 
     def write_all_data_frames(self, file_name : str = "data.xlsx"):
-        self.data_frames["CABLETYPE"] = self.get_cable_type_data_as_dataframe()
         with pd.ExcelWriter(file_name) as writer:
             for name, dataframe in self.data_frames.items():
                 dataframe.to_excel(writer, sheet_name=name, index=False)

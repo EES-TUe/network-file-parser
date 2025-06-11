@@ -20,7 +20,7 @@ class GnfParser(FileParser):
         }
 
     def parse_cable_types(self, cables_df : pd.DataFrame) -> pd.DataFrame:
-        columns_to_group_by = ["Unom", "Price", "C", "C0", 
+        columns_to_group_by = ["C", "C0", 
                                "Inom0", "G1", "Inom1", "G2", 
                                "Inom2", "G3", "Inom3", "Ik1s", 
                                "Tr", "TInom", "TIk1s", "Frequency", 
