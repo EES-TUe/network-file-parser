@@ -1,23 +1,62 @@
+from enum import Enum
 import pandas as pd
-from electricity_network_file_parser.FileParser import FileParser
+from electricity_network_file_parser import FileParserGen
+from electricity_network_file_parser.TextParser7x import TextParser7x
+from electricity_network_file_parser.TextParser8x import TextParser8x
+from electricity_network_file_parser.dataclasses import EntityDescription7x
 
-class GnfParser(FileParser):
+class VersionNumber(Enum):
+    G7 = "G7."
+    G8 = "G8."
+
+class GnfParser(FileParserGen):
 
     def __init__(self, file_path):
         super().__init__(file_path)
-        self.parse_entities_dict = {
-            "PROFILE" : ["General", "ProfileType"],
-            "GM TYPE" : ["General"],
-            "NODE" : ["General"],
-            "LINK" : ["General"],
-            "CABLE" : ["General", "CablePart", "CableType"],
-            "TRANSFORMER" : ["General", "VoltageControl", "TransformerType"],
-            "SOURCE" : ["General"],
-            "LOAD" : ["General"],
-            "HOME" : ["General", "ConnectionCableType", "FuseType"],
-            "MEASURE FIELD" : ["General"],
-            "FUSE": ["General"]
-        }
+        if VersionNumber.G7 in self.version_string:
+            self.version_number = VersionNumber.G8
+            self.text_parser = TextParser8x(file_path)
+        elif VersionNumber.G8 in self.version_string:
+            self.version_number = VersionNumber.G7
+            self.text_parser = TextParser7x(file_path)
+
+        if self.text_parser is None:
+            raise ValueError("Unsupported file format. Only G7 and G8 files are supported.")
+
+        if self.version_number == VersionNumber.G8:
+            self.parse_entities_dict = {
+                "PROFILE" : ["General", "ProfileType"],
+                "GM TYPE" : ["General"],
+                "NODE" : ["General"],
+                "LINK" : ["General"],
+                "CABLE" : ["General", "CablePart", "CableType"],
+                "TRANSFORMER" : ["General", "VoltageControl", "TransformerType"],
+                "SOURCE" : ["General"],
+                "LOAD" : ["General"],
+                "HOME" : ["General", "ConnectionCableType", "FuseType"],
+                "MEASURE FIELD" : ["General"],
+                "FUSE": ["General"]
+            }
+        elif self.version_number == VersionNumber.G7:
+            self.parse_entities_dict = {
+                "PROFILE" : [EntityDescription7x(1, ["number", "name", "profiletype"])],
+                "NODE" : [EntityDescription7x(1, ["number", "revision", "name", "shortname", "ID", "Unom", "GroundingConfig", "s_n_pe", "s_pe_a", "Ra", "k_h1", "k_h2", "k_h3", "k_h4", "s_h1", "s_h2", "s_h3", "s_h4", "gx", "gy", "SkipCalculation", "FailFrequency"])],
+                "LINK" : [EntityDescription7x(1, ["number", "revision", "knr1", "knr2", "name", "s1_l1", "s1_l2", "s1_l3", "s1_n", "s1_pe", "s2_l1", "s2_l2", "s2_l3", "s2_n", "s2_pe", "field1", "field2", "failurefrequency", "s1_h1", "s1_h2", "s1_h3", "s1_h4", "s2_h1", "s2_h2", "s2_h3", "s2_h4"])],
+                "CABLE" : [
+                    # EntityDescription7x(1, ["number", "revision", "knr1", "knr2", "name", "s1_l1", "s1_l2", "s1_l3", "s1_n", "s1_pe", "s2_l1", "s2_l2", "s2_l3", "s2_n", "s2_pe", "field1", "field2", "failurefrequency", "new", "homegrouding", "homeRa", "PV-scaling", "PV-profilenr", "k1_1", "k1_2", "k1_3", "k1_4", "k1_5", "k1_6", "k1_7", "k1_8", "k1_9", "k2_1", "k2_2", "k2_3", "k2_4", "k2_5", "k2_6", "k2_7", "k2_8", "k2_9", "s1_h1", "s1_h2", "s1_h3", "s1_h4", "s2_h1", "s2_h2", "s2_h3", "s2_h4", "meltsafetytype1_h", "currenttype1_h", "meltsafetytype2_h", "currenttype2_h"]), 
+                    EntityDescription7x(2, ["length", "cabletype"]),
+                    EntityDescription7x(3, ["shortname", "Unom", "price", "C", "C0", "Inom0", "G1", "Inom1", "G2", "Inom2", "G3", "Inom3", "Ik1s", "TR", "TInom", "TIk1s", "frequency", "r_g", "x_g", "r_gg_n", "x_ggf_n", "r_gg_t", "x_gg_t", "r_a", "x_a", "r_ga", "x_ga", "r_h", "x_h", "r_gh_n", "x_gh_n", "r_gh_t", "x_gh_t", "r_hh_n", "x_hh_n", "r_hh_t", "x_hh_t", "r_ha", "x_ha", "Inom_a", "Ik1s_a", "Inom_h", "Ik1s_h", "r_g/r_n"]) 
+                ],
+                "TRANSFORMER" : [
+                    EntityDescription7x(1, ["nr", "revision", "knr1", "knr2", "naam", "s1_l1", "s1_l2", "s1_l3", "s1_n", "s1_pe", "s2_l1", "s2_l2", "s2_l3", "s2_n", "s2_pe", "veld1", "veld2", "faalfrequentie", "trafotype", "s_n_pe", "s_pe_a", "Ra", "trapstand", "regelingstatus", "meetzijde", "regelknoopnr", "Uset", "Uband", "regelingsoort", "Rc", "Xc", "terugc", "Pmin", "Umin", "Pmax", "Umax"]), 
+                    EntityDescription7x(2, ["kortenaam", "Snom", "Unom1", "Unom2", "Uk", "Pk", "Pnul", "Inul", "R0", "Z0", "Ik2s", "schak1", "schak2", "klok", "trapzijde", "trapgrootte", "trapmin", "trapnom", "trapmax", "regelbaar"]),
+                ],
+                "SOURCE" : ["General"],
+                "LOAD" : ["General"],
+                "HOME" : ["General", "ConnectionCableType", "FuseType"],
+                "MEASURE FIELD" : ["General"],
+                "FUSE": ["General"]
+            }
 
     def parse_cable_types(self, cables_df : pd.DataFrame) -> pd.DataFrame:
         columns_to_group_by = ["C", "C0", 
