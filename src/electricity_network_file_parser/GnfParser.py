@@ -1,6 +1,6 @@
 from enum import Enum
 import pandas as pd
-from electricity_network_file_parser import FileParserGen
+from electricity_network_file_parser.FileParserGen import FileParserGen
 from electricity_network_file_parser.TextParser7x import TextParser7x
 from electricity_network_file_parser.TextParser8x import TextParser8x
 from electricity_network_file_parser.dataclasses import EntityDescription7x
@@ -13,12 +13,12 @@ class GnfParser(FileParserGen):
 
     def __init__(self, file_path):
         super().__init__(file_path)
-        if VersionNumber.G7 in self.version_string:
+        if VersionNumber.G8.value in self.version_string:
             self.version_number = VersionNumber.G8
-            self.text_parser = TextParser8x(file_path)
-        elif VersionNumber.G8 in self.version_string:
+            self.text_parser = TextParser8x()
+        elif VersionNumber.G7.value in self.version_string:
             self.version_number = VersionNumber.G7
-            self.text_parser = TextParser7x(file_path)
+            self.text_parser = TextParser7x()
 
         if self.text_parser is None:
             raise ValueError("Unsupported file format. Only G7 and G8 files are supported.")
@@ -48,14 +48,15 @@ class GnfParser(FileParserGen):
                     EntityDescription7x(3, ["shortname", "Unom", "price", "C", "C0", "Inom0", "G1", "Inom1", "G2", "Inom2", "G3", "Inom3", "Ik1s", "TR", "TInom", "TIk1s", "frequency", "r_g", "x_g", "r_gg_n", "x_ggf_n", "r_gg_t", "x_gg_t", "r_a", "x_a", "r_ga", "x_ga", "r_h", "x_h", "r_gh_n", "x_gh_n", "r_gh_t", "x_gh_t", "r_hh_n", "x_hh_n", "r_hh_t", "x_hh_t", "r_ha", "x_ha", "Inom_a", "Ik1s_a", "Inom_h", "Ik1s_h", "r_g/r_n"]) 
                 ],
                 "TRANSFORMER" : [
-                    EntityDescription7x(1, ["nr", "revision", "knr1", "knr2", "naam", "s1_l1", "s1_l2", "s1_l3", "s1_n", "s1_pe", "s2_l1", "s2_l2", "s2_l3", "s2_n", "s2_pe", "veld1", "veld2", "faalfrequentie", "trafotype", "s_n_pe", "s_pe_a", "Ra", "trapstand", "regelingstatus", "meetzijde", "regelknoopnr", "Uset", "Uband", "regelingsoort", "Rc", "Xc", "terugc", "Pmin", "Umin", "Pmax", "Umax"]), 
-                    EntityDescription7x(2, ["kortenaam", "Snom", "Unom1", "Unom2", "Uk", "Pk", "Pnul", "Inul", "R0", "Z0", "Ik2s", "schak1", "schak2", "klok", "trapzijde", "trapgrootte", "trapmin", "trapnom", "trapmax", "regelbaar"]),
+                    EntityDescription7x(1, ["number", "revision", "knr1", "knr2", "name", "s1_l1", "s1_l2", "s1_l3", "s1_n", "s1_pe", "s2_l1", "s2_l2", "s2_l3", "s2_n", "s2_pe", "veld1", "veld2", "failurefrequency", "trafotype", "s_n_pe", "s_pe_a", "Ra", "trapstand", "regelingstatus", "meetzijde", "regelknoopnr", "Uset", "Uband", "regelingsoort", "Rc", "Xc", "terugc", "Pmin", "Umin", "Pmax", "Umax"]), 
+                    EntityDescription7x(2, ["shortname", "Snom", "Unom1", "Unom2", "Uk", "Pk", "Pnul", "Inul", "R0", "Z0", "Ik2s", "schak1", "schak2", "klok", "trapzijde", "trapgrootte", "trapmin", "trapnom", "trapmax", "regelbaar"]),
                 ],
-                "SOURCE" : ["General"],
-                "LOAD" : ["General"],
-                "HOME" : ["General", "ConnectionCableType", "FuseType"],
-                "MEASURE FIELD" : ["General"],
-                "FUSE": ["General"]
+                "SOURCE" : [EntityDescription7x(1, ["1", "knr", "subnr", "revision", "naam", "s_l1", "s_l2", "s_l3", "s_n", "veld", "Umin", "Umax", "Uprofile", "Sk'nom", "profilenumber", "failurefrequency"])],
+                "LOAD" : [EntityDescription7x(1, ["knr", "subnr", "revision", "name", "s_l1", "s_l2", "s_l3", "s_n", "veld", "Pa", "Qa", "Pb", "Qb", "Pc", "Qc", "Pab", "Qab", "Pac", "Qac", "Pbc", "Qbc", "gedragsoort", "groeinr", "profielnr", "harmonischentype", "inschakelfrequentie", "piektomgekeerd"])],
+                "HOME" : [
+                    EntityDescription7x(1, ["knr", "subnr", "revision", "name", "s_l1", "s_l2", "s_l3", "s_n", "veld", "s_pe", "k_1", "k_2", "k_3", "length", "cabletype", "aardingsconfiguratie", "sh_n_pe", "sh_pe_pe", "sh_pe_a", "Ra", "sh_h", "smeltveiligheidtype", "stroomtype", "fasen", "soort", "aansluitwaarde", "Iaardlek", "risico", "gx", "gy", "adres", "postcode", "woonplaats"]), 
+                    EntityDescription7x(2, ["shortname", "Unom", "price", "C", "C0", "Inom0", "G1", "Inom1", "G2", "Inom2", "G3", "Inom3", "Ik1s", "TR", "TInom", "TIk1s", "frequency", "r_g", "x_g", "r_gg_n", "x_ggf_n", "r_gg_t", "x_gg_t", "r_a", "x_a", "r_ga", "x_ga", "r_h", "x_h", "r_gh_n", "x_gh_n", "r_gh_t", "x_gh_t", "r_hh_n", "x_hh_n", "r_hh_t", "x_hh_t", "r_ha", "x_ha", "Inom_a", "Ik1s_a", "Inom_h", "Ik1s_h", "r_g/r_n"])
+                ]
             }
 
     def parse_cable_types(self, cables_df : pd.DataFrame) -> pd.DataFrame:

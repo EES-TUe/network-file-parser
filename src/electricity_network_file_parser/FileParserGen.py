@@ -46,7 +46,7 @@ class FileParserGen:
         pass
 
     def parse_entities(self, lines : List[str], property_attributes_to_parse : List[str]):
-        pass
+        return self.text_parser.parse_entities(lines, property_attributes_to_parse)
 
     def create_entity_dict(self, lines):
         entity_indices = [i for i, line in enumerate(lines) if line.strip().startswith("[") and line.strip().endswith("]")]

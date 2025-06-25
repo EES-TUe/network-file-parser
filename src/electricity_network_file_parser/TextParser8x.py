@@ -7,8 +7,6 @@ from electricity_network_file_parser import FileParserGen
 from electricity_network_file_parser.dataclasses import PropertyDescription
 
 class TextParser8x:
-    def __init__(self, file_path):
-        super().__init__(file_path)
 
     def parse_property_line(self, property_line : str):
         property_name = property_line[1: property_line.index(" ")]

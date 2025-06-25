@@ -6,7 +6,7 @@ from electricity_network_file_parser.GnfParser import GnfParser
 class Test(unittest.TestCase):
 
     def setUp(self):
-        self.gnf_parser = GnfParser("test.gnf")
+        self.gnf_parser = GnfParser("test/test.gnf")
 
     def test_gnf_parser(self):
         self.gnf_parser.parse_file()
